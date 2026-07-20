@@ -1,25 +1,41 @@
+"use client";
+
+import { Suspense } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { categories, getProductBySlug, getRelatedProducts, products, reviews } from "@/lib/data";
+import { useSearchParams } from "next/navigation";
+import { reviews } from "@/lib/data";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductTabs } from "@/components/ProductTabs";
 import { BuyBox } from "@/components/BuyBox";
+import { useShopCategoriesStore } from "@/store/shopCategories";
+import { useShopProductsStore, sortedProducts } from "@/store/shopProducts";
 
-export function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }));
-}
+function ProductPageContent() {
+  const slug = useSearchParams().get("slug") ?? "";
+  const items = useShopProductsStore((state) => state.items);
+  const categories = useShopCategoriesStore((state) => state.items);
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const product = getProductBySlug(slug);
-  if (!product) notFound();
+  const product = items.find((item) => item.slug === slug);
+
+  if (!product) {
+    return (
+      <div className="py-16 text-center">
+        <p className="mb-4 text-muted">این محصول یافت نشد یا حذف شده است.</p>
+        <Link href="/" className="rounded-full bg-primary px-6 py-2.5 font-bold text-white">
+          بازگشت به فروشگاه
+        </Link>
+      </div>
+    );
+  }
 
   const category = categories.find((item) => item.slug === product.categorySlug);
-  const relatedProducts = getRelatedProducts(slug);
+  const sameCategory = sortedProducts(items).filter(
+    (item) => item.slug !== slug && item.categorySlug === product.categorySlug
+  );
+  const relatedProducts = (sameCategory.length > 0 ? sameCategory : items.filter((item) => item.slug !== slug)).slice(
+    0,
+    4
+  );
 
   return (
     <>
@@ -29,7 +45,7 @@ export default async function ProductPage({
         </Link>
         /{" "}
         {category && (
-          <Link href={`/category/${category.slug}`} className="hover:text-primary">
+          <Link href={`/category?slug=${category.slug}`} className="hover:text-primary">
             {category.name}
           </Link>
         )}{" "}
@@ -100,5 +116,13 @@ export default async function ProductPage({
         </>
       )}
     </>
+  );
+}
+
+export default function ProductPage() {
+  return (
+    <Suspense fallback={null}>
+      <ProductPageContent />
+    </Suspense>
   );
 }

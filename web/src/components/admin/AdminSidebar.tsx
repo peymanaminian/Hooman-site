@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSiteContentStore } from "@/store/siteContent";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "داشبورد" },
+  { href: "/admin/appearance", label: "ظاهر فروشگاه" },
   { href: "/admin/products", label: "محصولات" },
   { href: "/admin/categories", label: "دسته‌بندی‌ها" },
   { href: "/admin/orders", label: "سفارش‌ها" },
@@ -18,10 +20,11 @@ const NAV_ITEMS = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const storeName = useSiteContentStore((state) => state.storeName);
 
   return (
     <aside className="w-[230px] shrink-0 bg-[#1b1d27] p-5 text-[#e5e7eb]">
-      <div className="mb-6 px-2 text-lg font-extrabold text-white">Hooman Shop — مدیریت</div>
+      <div className="mb-6 px-2 text-lg font-extrabold text-white">{storeName} — مدیریت</div>
       <ul className="space-y-1">
         {NAV_ITEMS.map((item) => {
           const active = item.href === "/admin" ? pathname === "/admin" : pathname?.startsWith(item.href);

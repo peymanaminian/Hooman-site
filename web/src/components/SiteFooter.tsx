@@ -1,11 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { useSiteContentStore } from "@/store/siteContent";
 
 export function SiteFooter() {
+  const storeName = useSiteContentStore((state) => state.storeName);
+
   return (
     <footer className="mt-12 border-t border-border bg-surface py-9">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 sm:grid-cols-4">
         <div>
-          <h4 className="mb-3 text-sm font-bold">درباره Hooman Shop</h4>
+          <h4 className="mb-3 text-sm font-bold">درباره {storeName}</h4>
           <ul className="space-y-2 text-xs text-muted">
             <li>درباره ما</li>
             <li>فرصت‌های شغلی</li>
@@ -42,7 +47,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center justify-between gap-2 border-t border-border px-5 pt-4 text-xs text-muted">
-        <span>© ۱۴۰۵ Hooman Shop — تمامی حقوق محفوظ است.</span>
+        <span>© ۱۴۰۵ {storeName} — تمامی حقوق محفوظ است.</span>
         <Link href="/admin" className="hover:text-primary">
           پنل مدیریت
         </Link>

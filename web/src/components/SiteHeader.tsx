@@ -1,14 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { categories } from "@/lib/data";
 import { cartLineCount, useCartHydrated, useCartStore } from "@/store/cart";
+import { sortedCategories, useShopCategoriesStore } from "@/store/shopCategories";
+import { useSiteContentStore } from "@/store/siteContent";
 
 export function SiteHeader() {
   const lines = useCartStore((state) => state.lines);
   const hydrated = useCartHydrated();
+  const categories = useShopCategoriesStore((state) => state.items);
+  const storeName = useSiteContentStore((state) => state.storeName);
 
   const itemCount = hydrated ? cartLineCount(lines) : 0;
+  const orderedCategories = sortedCategories(categories);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface">
@@ -24,7 +28,7 @@ export function SiteHeader() {
 
       <div className="mx-auto flex max-w-6xl items-center gap-5 px-5 py-3">
         <Link href="/" className="shrink-0 text-xl font-extrabold text-primary">
-          Hooman Shop
+          {storeName}
         </Link>
         <div className="flex flex-1 overflow-hidden rounded-full border border-border bg-background">
           <input
@@ -59,9 +63,9 @@ export function SiteHeader() {
               همه دسته‌ها
             </Link>
           </li>
-          {categories.map((category) => (
+          {orderedCategories.map((category) => (
             <li key={category.slug}>
-              <Link href={`/category/${category.slug}`} className="hover:text-primary">
+              <Link href={`/category?slug=${category.slug}`} className="hover:text-primary">
                 {category.name}
               </Link>
             </li>

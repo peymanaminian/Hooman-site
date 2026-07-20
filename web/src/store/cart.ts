@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getProductBySlug } from "@/lib/data";
+import type { Product } from "@/lib/data";
 import { useHydrated } from "@/store/useHydrated";
 
 export type CartLine = {
@@ -65,9 +65,9 @@ export function cartLineCount(lines: CartLine[]): number {
   return lines.reduce((sum, line) => sum + line.quantity, 0);
 }
 
-export function cartSubtotal(lines: CartLine[]): number {
+export function cartSubtotal(lines: CartLine[], products: Product[]): number {
   return lines.reduce((sum, line) => {
-    const product = getProductBySlug(line.productSlug);
+    const product = products.find((item) => item.slug === line.productSlug);
     return sum + (product ? product.price * line.quantity : 0);
   }, 0);
 }

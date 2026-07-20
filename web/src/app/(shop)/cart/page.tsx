@@ -2,19 +2,20 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { getProductBySlug } from "@/lib/data";
 import { cartSubtotal, useCartHydrated, useCartStore } from "@/store/cart";
+import { useShopProductsStore } from "@/store/shopProducts";
 
 export default function CartPage() {
   const lines = useCartStore((state) => state.lines);
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+  const products = useShopProductsStore((state) => state.items);
   const [couponCode, setCouponCode] = useState("");
   const hydrated = useCartHydrated();
 
   if (!hydrated) return null;
 
-  const subtotal = cartSubtotal(lines);
+  const subtotal = cartSubtotal(lines, products);
   const total = subtotal;
 
   if (lines.length === 0) {
@@ -43,7 +44,7 @@ export default function CartPage() {
       <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-[1fr_340px]">
         <div>
           {lines.map((line) => {
-            const product = getProductBySlug(line.productSlug);
+            const product = products.find((item) => item.slug === line.productSlug);
             if (!product) return null;
             const variant = product.variants.find((v) => v.id === line.variantId);
             return (

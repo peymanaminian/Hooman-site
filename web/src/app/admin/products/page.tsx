@@ -2,48 +2,69 @@
 
 import { useState } from "react";
 import { AdminTopbar } from "@/components/admin/AdminTopbar";
-import { categories } from "@/lib/data";
-import { categoryName, useAdminProductsStore, type AdminProduct } from "@/store/adminProducts";
+import { DragHandle } from "@/components/admin/DragHandle";
+import { useShopCategoriesStore } from "@/store/shopCategories";
+import { sortedProducts, useShopProductsStore, type ShopProduct } from "@/store/shopProducts";
 import { useHydrated } from "@/store/useHydrated";
 
 export default function AdminProductsPage() {
-  const items = useAdminProductsStore((state) => state.items);
-  const addProduct = useAdminProductsStore((state) => state.addProduct);
-  const updateProduct = useAdminProductsStore((state) => state.updateProduct);
-  const deleteProduct = useAdminProductsStore((state) => state.deleteProduct);
-  const hydrated = useHydrated(useAdminProductsStore.persist);
+  const items = useShopProductsStore((state) => state.items);
+  const addProduct = useShopProductsStore((state) => state.addProduct);
+  const updateProduct = useShopProductsStore((state) => state.updateProduct);
+  const deleteProduct = useShopProductsStore((state) => state.deleteProduct);
+  const reorder = useShopProductsStore((state) => state.reorder);
+  const categories = useShopCategoriesStore((state) => state.items);
+  const hydrated = useHydrated(useShopProductsStore.persist);
 
   const [title, setTitle] = useState("");
-  const [categorySlug, setCategorySlug] = useState(categories[0].slug);
+  const [categorySlug, setCategorySlug] = useState(categories[0]?.slug ?? "");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<Pick<AdminProduct, "title" | "price" | "stock">>({
+  const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  const [editValues, setEditValues] = useState<{ title: string; price: number; stock: number }>({
     title: "",
     price: 0,
     stock: 0,
   });
+  const [draggedSlug, setDraggedSlug] = useState<string | null>(null);
 
   function handleAdd() {
-    if (!title.trim() || !price) return;
+    if (!title.trim() || !price || !categorySlug) return;
     addProduct({ title: title.trim(), categorySlug, price: Number(price), stock: Number(stock) || 0 });
     setTitle("");
     setPrice("");
     setStock("");
   }
 
-  function startEdit(product: AdminProduct) {
-    setEditingId(product.id);
+  function startEdit(product: ShopProduct) {
+    setEditingSlug(product.slug);
     setEditValues({ title: product.title, price: product.price, stock: product.stock });
   }
 
-  function saveEdit(id: string) {
-    updateProduct(id, editValues);
-    setEditingId(null);
+  function saveEdit(slug: string) {
+    updateProduct(slug, { title: editValues.title, shortTitle: editValues.title, price: editValues.price, stock: editValues.stock });
+    setEditingSlug(null);
+  }
+
+  function categoryName(slug: string): string {
+    return categories.find((category) => category.slug === slug)?.name ?? slug;
+  }
+
+  function handleDrop(targetSlug: string) {
+    if (!draggedSlug || draggedSlug === targetSlug) return;
+    const ordered = sortedProducts(items).map((item) => item.slug);
+    const from = ordered.indexOf(draggedSlug);
+    const to = ordered.indexOf(targetSlug);
+    ordered.splice(from, 1);
+    ordered.splice(to, 0, draggedSlug);
+    reorder(ordered);
+    setDraggedSlug(null);
   }
 
   if (!hydrated) return null;
+
+  const orderedItems = sortedProducts(items);
 
   return (
     <>
@@ -89,9 +110,13 @@ export default function AdminProductsPage() {
           </button>
         </div>
 
+        <p className="mb-2.5 text-xs text-muted">
+          برای تغییر ترتیب نمایش محصولات در فروشگاه، ردیف‌ها را از دستگیره جابه‌جا کنید.
+        </p>
         <table className="w-full overflow-hidden rounded-2xl bg-surface text-[13px] shadow-sm">
           <thead>
             <tr>
+              <th className="bg-background p-3" />
               <th className="bg-background p-3 text-right text-[12.5px] text-muted">محصول</th>
               <th className="bg-background p-3 text-right text-[12.5px] text-muted">دسته</th>
               <th className="bg-background p-3 text-right text-[12.5px] text-muted">قیمت</th>
@@ -100,9 +125,19 @@ export default function AdminProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {items.map((product) => (
-              <tr key={product.id}>
-                {editingId === product.id ? (
+            {orderedItems.map((product) => (
+              <tr
+                key={product.slug}
+                draggable={editingSlug !== product.slug}
+                onDragStart={() => setDraggedSlug(product.slug)}
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={() => handleDrop(product.slug)}
+                className={draggedSlug === product.slug ? "opacity-40" : ""}
+              >
+                <td className="cursor-grab border-t border-border p-3 active:cursor-grabbing">
+                  <DragHandle />
+                </td>
+                {editingSlug === product.slug ? (
                   <>
                     <td className="border-t border-border p-3">
                       <input
@@ -134,13 +169,13 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="border-t border-border p-3">
                       <button
-                        onClick={() => saveEdit(product.id)}
+                        onClick={() => saveEdit(product.slug)}
                         className="ml-1 rounded-md bg-primary px-2.5 py-1 text-[11.5px] text-white"
                       >
                         ذخیره
                       </button>
                       <button
-                        onClick={() => setEditingId(null)}
+                        onClick={() => setEditingSlug(null)}
                         className="rounded-md bg-background px-2.5 py-1 text-[11.5px]"
                       >
                         انصراف
@@ -161,7 +196,7 @@ export default function AdminProductsPage() {
                         ویرایش
                       </button>
                       <button
-                        onClick={() => deleteProduct(product.id)}
+                        onClick={() => deleteProduct(product.slug)}
                         className="rounded-md bg-red-100 px-2.5 py-1 text-[11.5px] text-red-700"
                       >
                         حذف

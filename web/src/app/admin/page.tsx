@@ -3,10 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AdminTopbar } from "@/components/admin/AdminTopbar";
-import { categories } from "@/lib/data";
 import { orderStatusLabels, orderStatusStyles } from "@/lib/admin-data";
 import { useAdminOrdersStore } from "@/store/adminOrders";
-import { categoryName, useAdminProductsStore } from "@/store/adminProducts";
+import { useShopCategoriesStore } from "@/store/shopCategories";
+import { useShopProductsStore } from "@/store/shopProducts";
 import { useHydrated } from "@/store/useHydrated";
 
 const LOW_STOCK_THRESHOLD = 6;
@@ -19,19 +19,24 @@ const stats = [
 
 export default function AdminDashboardPage() {
   const orders = useAdminOrdersStore((state) => state.orders);
-  const products = useAdminProductsStore((state) => state.items);
-  const addProduct = useAdminProductsStore((state) => state.addProduct);
-  const deleteProduct = useAdminProductsStore((state) => state.deleteProduct);
-  const hydrated = useHydrated(useAdminProductsStore.persist);
+  const products = useShopProductsStore((state) => state.items);
+  const addProduct = useShopProductsStore((state) => state.addProduct);
+  const deleteProduct = useShopProductsStore((state) => state.deleteProduct);
+  const categories = useShopCategoriesStore((state) => state.items);
+  const hydrated = useHydrated(useShopProductsStore.persist);
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
 
   function handleAdd() {
-    if (!title.trim() || !price) return;
+    if (!title.trim() || !price || !categories[0]) return;
     addProduct({ title: title.trim(), categorySlug: categories[0].slug, price: Number(price), stock: 0 });
     setTitle("");
     setPrice("");
+  }
+
+  function categoryName(slug: string): string {
+    return categories.find((category) => category.slug === slug)?.name ?? slug;
   }
 
   if (!hydrated) return null;
@@ -150,7 +155,7 @@ export default function AdminDashboardPage() {
               </tr>
             )}
             {lowStock.map((product) => (
-              <tr key={product.id}>
+              <tr key={product.slug}>
                 <td className="border-t border-border p-3">{product.title}</td>
                 <td className="border-t border-border p-3">{categoryName(product.categorySlug)}</td>
                 <td className="border-t border-border p-3">{product.stock.toLocaleString("fa-IR")} عدد</td>
@@ -163,7 +168,7 @@ export default function AdminDashboardPage() {
                     ویرایش
                   </Link>
                   <button
-                    onClick={() => deleteProduct(product.id)}
+                    onClick={() => deleteProduct(product.slug)}
                     className="rounded-md bg-red-100 px-2.5 py-1 text-[11.5px] text-red-700"
                   >
                     حذف

@@ -103,14 +103,6 @@ export const reviews: Review[] = [
   },
 ];
 
-export function getProductBySlug(slug: string): Product | undefined {
-  return products.find((product) => product.slug === slug);
-}
-
-export function getRelatedProducts(slug: string, count = 4): Product[] {
-  return products.filter((product) => product.slug !== slug).slice(0, count);
-}
-
 export function formatToman(amount: number): string {
   return `${amount.toLocaleString("fa-IR")} تومان`;
 }

@@ -1,14 +1,16 @@
 "use client";
 
 import { cartSubtotal, useCartHydrated, useCartStore } from "@/store/cart";
+import { useShopProductsStore } from "@/store/shopProducts";
 
 const STEPS = ["سبد خرید", "آدرس و ارسال", "پرداخت", "ثبت سفارش"];
 
 export default function CheckoutPage() {
   const lines = useCartStore((state) => state.lines);
+  const products = useShopProductsStore((state) => state.items);
   const hydrated = useCartHydrated();
 
-  const subtotal = hydrated ? cartSubtotal(lines) : 0;
+  const subtotal = hydrated ? cartSubtotal(lines, products) : 0;
   const earnedPoints = Math.round(subtotal / 100000);
 
   return (

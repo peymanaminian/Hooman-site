@@ -14,7 +14,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl bg-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
       <Link
-        href={`/product/${product.slug}`}
+        href={`/product?slug=${product.slug}`}
         className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-neutral-100 to-neutral-200 px-3 text-center text-xs font-semibold text-muted dark:from-neutral-800 dark:to-neutral-700"
       >
         تصویر محصول
@@ -25,7 +25,7 @@ export function ProductCard({ product }: { product: Product }) {
         )}
       </Link>
       <div className="flex flex-1 flex-col gap-1.5 p-3.5 pb-4">
-        <Link href={`/product/${product.slug}`} className="min-h-[38px] text-[13.5px]">
+        <Link href={`/product?slug=${product.slug}`} className="min-h-[38px] text-[13.5px]">
           {product.shortTitle}
         </Link>
         <div className="text-xs text-accent">
