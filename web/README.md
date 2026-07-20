@@ -17,6 +17,26 @@ npm run dev
 
 سپس http://localhost:3000 را باز کنید.
 
+## استقرار (Deploy)
+
+### GitHub Pages
+
+این پروژه با ورک‌فلو `.github/workflows/deploy-pages.yml` به‌صورت خودکار در هر push به شاخه `main` روی GitHub Pages منتشر می‌شود (به آدرس `https://<username>.github.io/Hooman-site/`). این ورک‌فلو یک static export می‌سازد (`next build` با `DEPLOY_TARGET=github-pages` که `basePath`/`assetPrefix` را روی `/Hooman-site` تنظیم می‌کند، چون GitHub Pages این مخزن را از یک زیرمسیر سرو می‌کند نه ریشه دامنه).
+
+**یک‌بار قبل از اولین اجرا** باید در تنظیمات مخزن، Pages را فعال کنید:
+Settings → Pages → Build and deployment → Source: **GitHub Actions**
+
+برای تست local همین حالت:
+
+```bash
+DEPLOY_TARGET=github-pages npm run build
+npx serve out
+```
+
+### Vercel / Netlify
+
+اگر بعداً به Vercel یا Netlify برگردید، نیازی به `DEPLOY_TARGET` نیست — چون این متغیر تنظیم نمی‌شود، برنامه به‌صورت کامل با سرور Next.js (نه static export) اجرا می‌شود؛ پیکربندی Netlify از پیش در `../netlify.toml` آماده است.
+
 فعلاً داده‌های محصولات/دسته‌بندی‌ها به‌صورت mock در `src/lib/data.ts` تعریف شده‌اند تا رابط کاربری بدون نیاز به دیتابیس واقعی قابل اجرا باشد. برای اتصال به دیتابیس واقعی:
 
 1. یک دیتابیس PostgreSQL راه‌اندازی کنید و `DATABASE_URL` را در `.env` تنظیم کنید.

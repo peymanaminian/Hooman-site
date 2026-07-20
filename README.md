@@ -9,3 +9,7 @@
 - **`docs/tech-stack.md`** — پیشنهاد پشته فناوری برای پیاده‌سازی پروژه.
 - **`docs/database-schema.md`** — توضیح ساختار دیتابیس پیشنهادی.
 - **`database/schema.sql`** — DDL کامل و اجرایی دیتابیس (PostgreSQL) شامل جداول کاربران، محصولات، سفارش‌ها، پرداخت، باشگاه مشتریان و پیشنهاد محصول (معادل `web/prisma/schema.prisma`).
+
+## استقرار
+
+سایت به‌صورت خودکار روی **GitHub Pages** منتشر می‌شود (`.github/workflows/deploy-pages.yml`، آدرس: `https://<username>.github.io/Hooman-site/`). جزئیات و نحوه فعال‌سازی یک‌باره Pages در `web/README.md` آمده است.
