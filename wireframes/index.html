@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>هومان مارکت | فروشگاه اینترنتی چندمنظوره</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <span>ارسال رایگان برای خریدهای بالای ۵۰۰ هزار تومان</span>
+    <div class="socials"><span>اینستاگرام</span><span>تلگرام</span></div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container header-row">
+    <div class="logo">هومان مارکت</div>
+    <div class="search-box">
+      <input type="text" placeholder="جستجوی محصول، برند یا دسته‌بندی...">
+      <button>جستجو</button>
+    </div>
+    <div class="header-actions">
+      <a class="icon-btn" href="account.html">👤 <span>حساب من</span></a>
+      <a class="icon-btn" href="account.html">🏆 <span>باشگاه مشتریان</span></a>
+      <a class="icon-btn" href="cart.html">🛒 <span>سبد خرید</span><span class="badge">۳</span></a>
+    </div>
+  </div>
+  <nav class="main-nav container">
+    <ul>
+      <li><a href="index.html">همه دسته‌ها</a></li>
+      <li><a href="product.html">موبایل و تبلت</a></li>
+      <li><a href="product.html">دیجیتال</a></li>
+      <li><a href="product.html">پوشاک</a></li>
+      <li><a href="product.html">لوازم خانه</a></li>
+      <li><a href="product.html">زیبایی و سلامت</a></li>
+      <li><a href="product.html">کودک و اسباب‌بازی</a></li>
+      <li><a href="product.html">ورزش و سفر</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="container">
+
+  <section class="hero">
+    <div>
+      <h1>جشنواره تابستانه هومان مارکت</h1>
+      <p>تا ۴۰٪ تخفیف روی هزاران کالای متنوع + ارسال رایگان</p>
+      <a class="btn" href="product.html">مشاهده تخفیف‌ها</a>
+    </div>
+  </section>
+
+  <div class="category-strip">
+    <div class="category-chip"><span class="emoji">📱</span>موبایل</div>
+    <div class="category-chip"><span class="emoji">💻</span>دیجیتال</div>
+    <div class="category-chip"><span class="emoji">👗</span>پوشاک</div>
+    <div class="category-chip"><span class="emoji">🏠</span>لوازم خانه</div>
+    <div class="category-chip"><span class="emoji">💄</span>زیبایی</div>
+    <div class="category-chip"><span class="emoji">🧸</span>کودک</div>
+    <div class="category-chip"><span class="emoji">⚽</span>ورزش</div>
+    <div class="category-chip"><span class="emoji">📚</span>کتاب</div>
+  </div>
+
+  <div class="section-heading">
+    <h2>پیشنهاد ویژه برای شما</h2>
+    <a href="#">مشاهده همه</a>
+  </div>
+  <p class="muted" style="margin-top:-8px;font-size:12.5px">بر اساس تاریخچه بازدید و خرید شما انتخاب شده است</p>
+  <div class="grid" id="recommend-grid"></div>
+
+  <div class="section-heading">
+    <h2>پرفروش‌ترین‌ها</h2>
+    <a href="#">مشاهده همه</a>
+  </div>
+  <div class="grid" id="bestseller-grid"></div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <h4>درباره هومان مارکت</h4>
+      <ul>
+        <li>درباره ما</li>
+        <li>فرصت‌های شغلی</li>
+        <li>وبلاگ</li>
+      </ul>
+    </div>
+    <div>
+      <h4>خدمات مشتریان</h4>
+      <ul>
+        <li>پیگیری سفارش</li>
+        <li>راهنمای خرید</li>
+        <li>شرایط بازگشت کالا</li>
+      </ul>
+    </div>
+    <div>
+      <h4>باشگاه مشتریان</h4>
+      <ul>
+        <li>سطح‌بندی و امتیازات</li>
+        <li>کدهای تخفیف اختصاصی</li>
+      </ul>
+    </div>
+    <div>
+      <h4>ما را دنبال کنید</h4>
+      <div class="social-icons">
+        <span title="اینستاگرام">IG</span>
+        <span title="تلگرام">TG</span>
+        <span title="گوگل">G</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">© ۱۴۰۵ هومان مارکت — تمامی حقوق محفوظ است.</div>
+</footer>
+
+<script>
+  const categories = ['📱','💻','👗','🏠','💄','🧸','⚽','📚'];
+  function renderCards(containerId, count, discounted) {
+    const el = document.getElementById(containerId);
+    let html = '';
+    for (let i = 0; i < count; i++) {
+      const price = (150 + i * 37) * 1000;
+      const oldPrice = Math.round(price * 1.25);
+      html += `
+        <div class="product-card">
+          <div class="product-thumb">${categories[i % categories.length]}
+            ${discounted ? '<span class="discount-tag">۲۰٪-</span>' : ''}
+          </div>
+          <div class="product-info">
+            <div class="product-title">محصول نمونه شماره ${i + 1} با نام کامل و ویژگی‌ها</div>
+            <div class="rating">★★★★☆ (۱۲۴)</div>
+            <div class="price-row">
+              ${discounted ? `<span class="price-old">${oldPrice.toLocaleString('fa-IR')}</span>` : ''}
+              <span class="price-new">${price.toLocaleString('fa-IR')} تومان</span>
+            </div>
+            <button class="add-cart-btn">افزودن به سبد خرید</button>
+          </div>
+        </div>`;
+    }
+    el.innerHTML = html;
+  }
+  renderCards('recommend-grid', 8, false);
+  renderCards('bestseller-grid', 8, true);
+</script>
+</body>
+</html>
