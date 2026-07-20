@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>هومان مارکت | فروشگاه اینترنتی چندمنظوره</title>
+<title>Hooman Shop | فروشگاه اینترنتی چندمنظوره</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -17,15 +17,15 @@
 
 <header class="site-header">
   <div class="container header-row">
-    <div class="logo">هومان مارکت</div>
+    <div class="logo">Hooman Shop</div>
     <div class="search-box">
       <input type="text" placeholder="جستجوی محصول، برند یا دسته‌بندی...">
       <button>جستجو</button>
     </div>
     <div class="header-actions">
-      <a class="icon-btn" href="account.html">👤 <span>حساب من</span></a>
-      <a class="icon-btn" href="account.html">🏆 <span>باشگاه مشتریان</span></a>
-      <a class="icon-btn" href="cart.html">🛒 <span>سبد خرید</span><span class="badge">۳</span></a>
+      <a class="icon-btn" href="account.html"><span>حساب من</span></a>
+      <a class="icon-btn" href="account.html"><span>باشگاه مشتریان</span></a>
+      <a class="icon-btn" href="cart.html"><span>سبد خرید</span><span class="badge">۳</span></a>
     </div>
   </div>
   <nav class="main-nav container">
@@ -46,21 +46,21 @@
 
   <section class="hero">
     <div>
-      <h1>جشنواره تابستانه هومان مارکت</h1>
+      <h1>جشنواره تابستانه Hooman Shop</h1>
       <p>تا ۴۰٪ تخفیف روی هزاران کالای متنوع + ارسال رایگان</p>
       <a class="btn" href="product.html">مشاهده تخفیف‌ها</a>
     </div>
   </section>
 
   <div class="category-strip">
-    <div class="category-chip"><span class="emoji">📱</span>موبایل</div>
-    <div class="category-chip"><span class="emoji">💻</span>دیجیتال</div>
-    <div class="category-chip"><span class="emoji">👗</span>پوشاک</div>
-    <div class="category-chip"><span class="emoji">🏠</span>لوازم خانه</div>
-    <div class="category-chip"><span class="emoji">💄</span>زیبایی</div>
-    <div class="category-chip"><span class="emoji">🧸</span>کودک</div>
-    <div class="category-chip"><span class="emoji">⚽</span>ورزش</div>
-    <div class="category-chip"><span class="emoji">📚</span>کتاب</div>
+    <div class="category-chip"><span class="icon-box">مو</span>موبایل</div>
+    <div class="category-chip"><span class="icon-box">دی</span>دیجیتال</div>
+    <div class="category-chip"><span class="icon-box">پو</span>پوشاک</div>
+    <div class="category-chip"><span class="icon-box">خا</span>لوازم خانه</div>
+    <div class="category-chip"><span class="icon-box">زی</span>زیبایی</div>
+    <div class="category-chip"><span class="icon-box">کو</span>کودک</div>
+    <div class="category-chip"><span class="icon-box">ور</span>ورزش</div>
+    <div class="category-chip"><span class="icon-box">کت</span>کتاب</div>
   </div>
 
   <div class="section-heading">
@@ -81,7 +81,7 @@
 <footer class="site-footer">
   <div class="container footer-grid">
     <div>
-      <h4>درباره هومان مارکت</h4>
+      <h4>درباره Hooman Shop</h4>
       <ul>
         <li>درباره ما</li>
         <li>فرصت‌های شغلی</li>
@@ -112,11 +112,10 @@
       </div>
     </div>
   </div>
-  <div class="footer-bottom">© ۱۴۰۵ هومان مارکت — تمامی حقوق محفوظ است.</div>
+  <div class="footer-bottom">© ۱۴۰۵ Hooman Shop — تمامی حقوق محفوظ است.</div>
 </footer>
 
 <script>
-  const categories = ['📱','💻','👗','🏠','💄','🧸','⚽','📚'];
   function renderCards(containerId, count, discounted) {
     const el = document.getElementById(containerId);
     let html = '';
@@ -125,7 +124,7 @@
       const oldPrice = Math.round(price * 1.25);
       html += `
         <div class="product-card">
-          <div class="product-thumb">${categories[i % categories.length]}
+          <div class="product-thumb">تصویر محصول
             ${discounted ? '<span class="discount-tag">۲۰٪-</span>' : ''}
           </div>
           <div class="product-info">

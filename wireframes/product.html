@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>هدفون بی‌سیم مدل X100 | هومان مارکت</title>
+<title>هدفون بی‌سیم مدل X100 | Hooman Shop</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -10,14 +10,14 @@
 
 <header class="site-header">
   <div class="container header-row">
-    <a class="logo" href="index.html">هومان مارکت</a>
+    <a class="logo" href="index.html">Hooman Shop</a>
     <div class="search-box">
       <input type="text" placeholder="جستجوی محصول، برند یا دسته‌بندی...">
       <button>جستجو</button>
     </div>
     <div class="header-actions">
-      <a class="icon-btn" href="account.html">👤 <span>حساب من</span></a>
-      <a class="icon-btn" href="cart.html">🛒 <span>سبد خرید</span><span class="badge">۳</span></a>
+      <a class="icon-btn" href="account.html"><span>حساب من</span></a>
+      <a class="icon-btn" href="cart.html"><span>سبد خرید</span><span class="badge">۳</span></a>
     </div>
   </div>
 </header>
@@ -29,9 +29,9 @@
 
   <div class="product-page">
     <div>
-      <div class="gallery-main">🎧</div>
+      <div class="gallery-main">تصویر اصلی محصول</div>
       <div class="gallery-thumbs">
-        <div>🎧</div><div>📦</div><div>🖼️</div><div>🖼️</div>
+        <div>تصویر ۱</div><div>تصویر ۲</div><div>تصویر ۳</div><div>تصویر ۴</div>
       </div>
     </div>
 
@@ -95,28 +95,27 @@
       <button class="btn btn-primary">افزودن به سبد خرید</button>
       <button class="btn btn-outline mt-24" style="width:100%">خرید با یک کلیک</button>
       <div class="trust-badges">
-        <div>✔ ضمانت اصالت کالا</div>
-        <div>✔ امکان بازگشت تا ۷ روز</div>
-        <div>✔ پرداخت امن با درگاه زرین‌پال</div>
-        <div>✔ ارسال از انبار مرکزی</div>
+        <div>ضمانت اصالت کالا</div>
+        <div>امکان بازگشت تا ۷ روز</div>
+        <div>پرداخت امن با درگاه زرین‌پال</div>
+        <div>ارسال از انبار مرکزی</div>
       </div>
     </aside>
   </div>
 </main>
 
 <footer class="site-footer">
-  <div class="container footer-bottom">© ۱۴۰۵ هومان مارکت — تمامی حقوق محفوظ است.</div>
+  <div class="container footer-bottom">© ۱۴۰۵ Hooman Shop — تمامی حقوق محفوظ است.</div>
 </footer>
 
 <script>
-  const emojis = ['🎧','🎤','🔊','📻','⌚','📷','💻','🖱️'];
   function cards(id, n) {
     let html = '';
     for (let i = 0; i < n; i++) {
       const price = (200 + i * 41) * 1000;
       html += `
         <div class="product-card">
-          <div class="product-thumb">${emojis[i % emojis.length]}</div>
+          <div class="product-thumb">تصویر محصول</div>
           <div class="product-info">
             <div class="product-title">کالای مرتبط شماره ${i + 1}</div>
             <div class="rating">★★★★☆</div>
