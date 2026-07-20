@@ -1,0 +1,61 @@
+import Link from "next/link";
+import { categories, products } from "@/lib/data";
+import { ProductCard } from "@/components/ProductCard";
+
+export default function HomePage() {
+  const bestsellers = [...products].reverse();
+
+  return (
+    <>
+      <section className="my-6 flex items-center justify-between gap-5 rounded-2xl bg-gradient-to-l from-primary to-[#ff6b81] p-10 text-white">
+        <div>
+          <h1 className="mb-2.5 text-2xl font-bold sm:text-3xl">جشنواره تابستانه Hooman Shop</h1>
+          <p className="mb-4 opacity-95">تا ۴۰٪ تخفیف روی هزاران کالای متنوع + ارسال رایگان</p>
+          <Link href="/product/wireless-headphone-x100" className="rounded-full bg-white px-5 py-2.5 font-bold text-primary-dark">
+            مشاهده تخفیف‌ها
+          </Link>
+        </div>
+      </section>
+
+      <div className="flex gap-4 overflow-x-auto pt-1.5 pb-5">
+        {categories.map((category) => (
+          <Link
+            key={category.slug}
+            href={`/category/${category.slug}`}
+            className="min-w-[92px] shrink-0 rounded-2xl bg-surface p-3.5 text-center text-[13px] shadow-sm"
+          >
+            <span className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-[10px] bg-primary/10 text-[13px] font-extrabold text-primary">
+              {category.initial}
+            </span>
+            {category.name}
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-7 mb-3.5 flex items-baseline justify-between">
+        <h2 className="text-lg font-bold">پیشنهاد ویژه برای شما</h2>
+        <Link href="#" className="text-xs text-primary">
+          مشاهده همه
+        </Link>
+      </div>
+      <p className="-mt-2 mb-3 text-xs text-muted">بر اساس تاریخچه بازدید و خرید شما انتخاب شده است</p>
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
+        {[...products, ...bestsellers].slice(0, 8).map((product, index) => (
+          <ProductCard key={`${product.slug}-${index}`} product={product} />
+        ))}
+      </div>
+
+      <div className="mt-7 mb-3.5 flex items-baseline justify-between">
+        <h2 className="text-lg font-bold">پرفروش‌ترین‌ها</h2>
+        <Link href="#" className="text-xs text-primary">
+          مشاهده همه
+        </Link>
+      </div>
+      <div className="mb-10 grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
+        {[...bestsellers, ...products].slice(0, 8).map((product, index) => (
+          <ProductCard key={`${product.slug}-b-${index}`} product={product} />
+        ))}
+      </div>
+    </>
+  );
+}
