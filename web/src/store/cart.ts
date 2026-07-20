@@ -1,7 +1,7 @@
-import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getProductBySlug } from "@/lib/data";
+import { useHydrated } from "@/store/useHydrated";
 
 export type CartLine = {
   productSlug: string;
@@ -57,15 +57,8 @@ export const useCartStore = create<CartState>()(
   )
 );
 
-// Persisted cart state only exists in the browser; this reports whether the
-// store has finished reading localStorage so components can avoid a
-// hydration mismatch between the server-rendered and client-rendered markup.
 export function useCartHydrated(): boolean {
-  return useSyncExternalStore(
-    (callback) => useCartStore.persist.onFinishHydration(callback),
-    () => useCartStore.persist.hasHydrated(),
-    () => false
-  );
+  return useHydrated(useCartStore.persist);
 }
 
 export function cartLineCount(lines: CartLine[]): number {
