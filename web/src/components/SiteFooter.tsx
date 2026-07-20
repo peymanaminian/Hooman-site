@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function SiteFooter() {
   return (
     <footer className="mt-12 border-t border-border bg-surface py-9">
@@ -39,8 +41,11 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
-      <div className="mx-auto mt-6 max-w-6xl border-t border-border px-5 pt-4 text-center text-xs text-muted">
-        © ۱۴۰۵ Hooman Shop — تمامی حقوق محفوظ است.
+      <div className="mx-auto mt-6 flex max-w-6xl flex-wrap items-center justify-between gap-2 border-t border-border px-5 pt-4 text-xs text-muted">
+        <span>© ۱۴۰۵ Hooman Shop — تمامی حقوق محفوظ است.</span>
+        <Link href="/admin" className="hover:text-primary">
+          پنل مدیریت
+        </Link>
       </div>
     </footer>
   );
