@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { DiamondIcon } from "@/components/DiamondIcon";
 import { ProductCard } from "@/components/ProductCard";
 import { sortedCategories, useShopCategoriesStore } from "@/store/shopCategories";
 import { sortedProducts, useShopProductsStore } from "@/store/shopProducts";
@@ -15,9 +16,12 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="my-6 flex items-center justify-between gap-5 rounded-2xl bg-gradient-to-l from-primary to-[#ff6b81] p-10 text-white">
+      <section className="my-6 flex items-center justify-between gap-5 rounded-2xl bg-gradient-to-l from-primary to-primary-dark p-10 text-white">
         <div>
-          <h1 className="mb-2.5 text-2xl font-bold sm:text-3xl">{heroTitle}</h1>
+          <h1 className="mb-2.5 flex items-center gap-2.5 text-2xl font-bold sm:text-3xl">
+            <DiamondIcon className="text-accent" />
+            {heroTitle}
+          </h1>
           <p className="mb-4 opacity-95">{heroSubtitle}</p>
           <Link href="#deals" className="rounded-full bg-white px-5 py-2.5 font-bold text-primary-dark">
             {heroCtaLabel}
@@ -32,9 +36,6 @@ export default function HomePage() {
             href={`/category?slug=${category.slug}`}
             className="min-w-[92px] shrink-0 rounded-2xl bg-surface p-3.5 text-center text-[13px] shadow-sm"
           >
-            <span className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-[10px] bg-primary/10 text-[13px] font-extrabold text-primary">
-              {category.initial}
-            </span>
             {category.name}
           </Link>
         ))}

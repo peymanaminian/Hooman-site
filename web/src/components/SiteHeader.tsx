@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { DiamondIcon } from "@/components/DiamondIcon";
 import { cartLineCount, useCartHydrated, useCartStore } from "@/store/cart";
 import { sortedCategories, useShopCategoriesStore } from "@/store/shopCategories";
 import { useSiteContentStore } from "@/store/siteContent";
@@ -29,7 +30,8 @@ export function SiteHeader() {
       </div>
 
       <div className="mx-auto flex max-w-6xl items-center gap-5 px-5 py-3">
-        <Link href="/" className="shrink-0 text-xl font-extrabold text-primary">
+        <Link href="/" className="flex shrink-0 items-center gap-2 text-xl font-extrabold text-primary">
+          <DiamondIcon />
           {storeName}
         </Link>
         <div className="flex flex-1 overflow-hidden rounded-full border border-border bg-background">

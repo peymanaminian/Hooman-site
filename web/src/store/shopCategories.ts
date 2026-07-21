@@ -5,7 +5,6 @@ import { categories as seedCategories } from "@/lib/data";
 export type ShopCategory = {
   slug: string;
   name: string;
-  initial: string;
   sortOrder: number;
 };
 
@@ -22,7 +21,7 @@ function slugify(name: string): string {
 
 type ShopCategoriesState = {
   items: ShopCategory[];
-  addCategory: (input: { name: string; initial: string }) => void;
+  addCategory: (input: { name: string }) => void;
   updateCategory: (slug: string, patch: Partial<Omit<ShopCategory, "slug">>) => void;
   deleteCategory: (slug: string) => void;
   reorder: (orderedSlugs: string[]) => void;
@@ -36,7 +35,7 @@ export const useShopCategoriesStore = create<ShopCategoriesState>()(
         set((state) => ({
           items: [
             ...state.items,
-            { slug: slugify(input.name), name: input.name, initial: input.initial, sortOrder: state.items.length },
+            { slug: slugify(input.name), name: input.name, sortOrder: state.items.length },
           ],
         })),
       updateCategory: (slug, patch) =>

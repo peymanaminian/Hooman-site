@@ -1,7 +1,6 @@
 export type Category = {
   slug: string;
   name: string;
-  initial: string;
 };
 
 export type ProductVariant = {
@@ -32,14 +31,14 @@ export type Review = {
 };
 
 export const categories: Category[] = [
-  { slug: "mobile", name: "موبایل و تبلت", initial: "مو" },
-  { slug: "digital", name: "دیجیتال", initial: "دی" },
-  { slug: "fashion", name: "پوشاک", initial: "پو" },
-  { slug: "home", name: "لوازم خانه", initial: "خا" },
-  { slug: "beauty", name: "زیبایی و سلامت", initial: "زی" },
-  { slug: "kids", name: "کودک و اسباب‌بازی", initial: "کو" },
-  { slug: "sport", name: "ورزش و سفر", initial: "ور" },
-  { slug: "books", name: "کتاب", initial: "کت" },
+  { slug: "mobile", name: "موبایل و تبلت" },
+  { slug: "digital", name: "دیجیتال" },
+  { slug: "fashion", name: "پوشاک" },
+  { slug: "home", name: "لوازم خانه" },
+  { slug: "beauty", name: "زیبایی و سلامت" },
+  { slug: "kids", name: "کودک و اسباب‌بازی" },
+  { slug: "sport", name: "ورزش و سفر" },
+  { slug: "books", name: "کتاب" },
 ];
 
 export const products: Product[] = [

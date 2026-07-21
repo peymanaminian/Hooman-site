@@ -17,7 +17,7 @@ export default function AdminCategoriesPage() {
 
   function handleAdd() {
     if (!name.trim()) return;
-    addCategory({ name: name.trim(), initial: name.trim().slice(0, 2) });
+    addCategory({ name: name.trim() });
     setName("");
   }
 

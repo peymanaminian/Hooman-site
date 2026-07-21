@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { DiamondIcon } from "@/components/DiamondIcon";
 import { useAdminAuthStore } from "@/store/adminAuth";
 import { useSiteContentStore } from "@/store/siteContent";
 
@@ -25,8 +26,11 @@ export function AdminSidebar() {
   const logout = useAdminAuthStore((state) => state.logout);
 
   return (
-    <aside className="flex w-[230px] shrink-0 flex-col bg-[#1b1d27] p-5 text-[#e5e7eb]">
-      <div className="mb-6 px-2 text-lg font-extrabold text-white">{storeName} — مدیریت</div>
+    <aside className="flex w-[230px] shrink-0 flex-col bg-[#0f172a] p-5 text-[#e5e7eb]">
+      <div className="mb-6 flex items-center gap-2 px-2 text-lg font-extrabold text-white">
+        <DiamondIcon className="text-accent" />
+        {storeName} — مدیریت
+      </div>
       <ul className="flex-1 space-y-1">
         {NAV_ITEMS.map((item) => {
           const active = item.href === "/admin" ? pathname === "/admin" : pathname?.startsWith(item.href);

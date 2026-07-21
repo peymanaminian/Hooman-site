@@ -8,7 +8,7 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-12 border-t border-border bg-surface py-9">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 sm:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 md:grid-cols-3 lg:grid-cols-5">
         <div>
           <h4 className="mb-3 text-sm font-bold">درباره {storeName}</h4>
           <ul className="space-y-2 text-xs text-muted">
@@ -61,6 +61,21 @@ export function SiteFooter() {
               <Link href="/coupons" className="hover:text-primary">
                 کدهای تخفیف اختصاصی
               </Link>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="mb-3 text-sm font-bold">پشتیبانی</h4>
+          <ul className="space-y-2 text-xs text-muted">
+            <li>
+              <a
+                href="https://t.me/Hooman120_bot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary"
+              >
+                گفتگو با پشتیبانی در تلگرام
+              </a>
             </li>
           </ul>
         </div>
