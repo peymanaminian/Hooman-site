@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { reviews } from "@/lib/data";
@@ -9,6 +9,25 @@ import { ProductTabs } from "@/components/ProductTabs";
 import { BuyBox } from "@/components/BuyBox";
 import { useShopCategoriesStore } from "@/store/shopCategories";
 import { useShopProductsStore, sortedProducts } from "@/store/shopProducts";
+
+function ProductImage({
+  src,
+  alt,
+  className,
+  fallback,
+}: {
+  src: string | undefined;
+  alt: string;
+  className: string;
+  fallback: React.ReactNode;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  if (!src || failed) return <>{fallback}</>;
+
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={src} alt={alt} onError={() => setFailed(true)} className={className} />;
+}
 
 function ProductPageContent() {
   const slug = useSearchParams().get("slug") ?? "";
@@ -54,16 +73,28 @@ function ProductPageContent() {
 
       <div className="grid grid-cols-1 gap-7 items-start lg:grid-cols-[460px_1fr_300px]">
         <div>
-          <div className="flex aspect-square items-center justify-center rounded-2xl bg-surface text-sm font-semibold text-muted shadow-sm">
-            تصویر اصلی محصول
+          <div className="flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-surface text-sm font-semibold text-muted shadow-sm">
+            <ProductImage
+              key={`${product.slug}-main`}
+              src={product.imageUrl}
+              alt={product.title}
+              className="h-full w-full object-cover"
+              fallback="تصویر اصلی محصول"
+            />
           </div>
           <div className="mt-3 flex gap-2.5">
             {[1, 2, 3, 4].map((n) => (
               <div
                 key={n}
-                className="flex h-16 w-16 items-center justify-center rounded-[10px] border border-border bg-surface text-[11px] text-muted"
+                className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-[10px] border border-border bg-surface text-[11px] text-muted"
               >
-                تصویر {n.toLocaleString("fa-IR")}
+                <ProductImage
+                  key={`${product.slug}-thumb-${n}`}
+                  src={product.imageUrl}
+                  alt={product.title}
+                  className="h-full w-full object-cover"
+                  fallback={`تصویر ${n.toLocaleString("fa-IR")}`}
+                />
               </div>
             ))}
           </div>

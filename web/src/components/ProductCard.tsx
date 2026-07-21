@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import type { Product } from "@/lib/data";
 import { formatToman } from "@/lib/data";
 import { useCartStore } from "@/store/cart";
 
 export function ProductCard({ product }: { product: Product }) {
   const addItem = useCartStore((state) => state.addItem);
+  const [imageFailed, setImageFailed] = useState(false);
   const discountPercent = product.compareAtPrice
     ? Math.round((1 - product.price / product.compareAtPrice) * 100)
     : 0;
@@ -15,9 +17,19 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="flex flex-col overflow-hidden rounded-2xl bg-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
       <Link
         href={`/product?slug=${product.slug}`}
-        className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-neutral-100 to-neutral-200 px-3 text-center text-xs font-semibold text-muted dark:from-neutral-800 dark:to-neutral-700"
+        className="relative flex aspect-square items-center justify-center overflow-hidden bg-gradient-to-br from-neutral-100 to-neutral-200 px-3 text-center text-xs font-semibold text-muted dark:from-neutral-800 dark:to-neutral-700"
       >
-        تصویر محصول
+        {product.imageUrl && !imageFailed ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.imageUrl}
+            alt={product.shortTitle}
+            onError={() => setImageFailed(true)}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          "تصویر محصول"
+        )}
         {discountPercent > 0 && (
           <span className="absolute top-2 right-2 rounded-md bg-primary px-2 py-0.5 text-[11px] font-bold text-white">
             {discountPercent.toLocaleString("fa-IR")}٪-

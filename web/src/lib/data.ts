@@ -22,6 +22,7 @@ export type Product = {
   stock: number;
   description: string;
   variants: ProductVariant[];
+  imageUrl?: string;
 };
 
 export type Review = {
@@ -60,6 +61,8 @@ export const products: Product[] = [
       { id: "white-18m", color: "سفید", warranty: "۱۸ ماهه شرکتی" },
       { id: "navy-none", color: "آبی نفتی", warranty: "بدون گارانتی" },
     ],
+    imageUrl:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Sennheiser_HD_598_over-ear_headphones_(31514940057).jpg?width=800",
   },
   {
     slug: "running-shoes-airflow",
@@ -73,6 +76,7 @@ export const products: Product[] = [
     stock: 5,
     description: "کفش رانینگ سبک با کفی طبی و تهویه هوا، مناسب دویدن روزانه.",
     variants: [{ id: "gray-42", color: "طوسی", warranty: "۶ ماهه" }],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/On_Cloud_Running_Shoes.jpg?width=800",
   },
   {
     slug: "ceramic-mug-set",
@@ -86,6 +90,7 @@ export const products: Product[] = [
     stock: 40,
     description: "ست ماگ سرامیکی دست‌ساز، مناسب هدیه و استفاده روزمره.",
     variants: [{ id: "white", color: "سفید", warranty: "-" }],
+    imageUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Mug_of_Tea_(10155541664).jpg?width=800",
   },
 ];
 

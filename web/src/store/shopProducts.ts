@@ -30,6 +30,8 @@ type ShopProductsState = {
   reorder: (orderedSlugs: string[]) => void;
 };
 
+const seedBySlug = new Map(seed.map((product) => [product.slug, product]));
+
 export const useShopProductsStore = create<ShopProductsState>()(
   persist(
     (set) => ({
@@ -73,7 +75,20 @@ export const useShopProductsStore = create<ShopProductsState>()(
           };
         }),
     }),
-    { name: "hooman-shop-products" }
+    {
+      name: "hooman-shop-products",
+      version: 1,
+      migrate: (persisted) => {
+        const state = persisted as ShopProductsState;
+        return {
+          ...state,
+          items: state.items.map((item) => ({
+            ...item,
+            imageUrl: item.imageUrl ?? seedBySlug.get(item.slug)?.imageUrl,
+          })),
+        };
+      },
+    }
   )
 );
 
