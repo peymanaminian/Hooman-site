@@ -23,7 +23,7 @@ export default function HomePage() {
             {heroTitle}
           </h1>
           <p className="mb-4 opacity-95">{heroSubtitle}</p>
-          <Link href="#deals" className="rounded-full bg-white px-5 py-2.5 font-bold text-primary-dark">
+          <Link href="/coupons" className="rounded-full bg-white px-5 py-2.5 font-bold text-primary-dark">
             {heroCtaLabel}
           </Link>
         </div>
