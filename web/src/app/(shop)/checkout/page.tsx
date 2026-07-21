@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { computeDiscount, findCoupon, useAdminCouponsStore } from "@/store/adminCoupons";
+import { computeDiscount, findCoupon, hasCompletedFirstPurchase, useAdminCouponsStore } from "@/store/adminCoupons";
 import { useAdminOrdersStore } from "@/store/adminOrders";
 import { cartSubtotal, useCartHydrated, useCartStore } from "@/store/cart";
 import { useShopProductsStore } from "@/store/shopProducts";
@@ -20,13 +20,15 @@ export default function CheckoutPage() {
   const coupons = useAdminCouponsStore((state) => state.items);
   const incrementCouponUsage = useAdminCouponsStore((state) => state.incrementUsage);
   const addOrder = useAdminOrdersStore((state) => state.addOrder);
+  const orders = useAdminOrdersStore((state) => state.orders);
   const hydrated = useCartHydrated();
 
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
 
+  const isFirstPurchase = !hasCompletedFirstPurchase(orders, CUSTOMER_NAME);
   const subtotal = hydrated ? cartSubtotal(lines, products) : 0;
   const appliedCoupon = couponCode ? findCoupon(coupons, couponCode) : undefined;
-  const discount = computeDiscount(appliedCoupon, subtotal);
+  const discount = computeDiscount(appliedCoupon, subtotal, isFirstPurchase);
   const total = subtotal - discount;
   const earnedPoints = Math.floor(total / 100000);
 

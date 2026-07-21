@@ -33,6 +33,10 @@ export default function AdminCouponsPage() {
     <>
       <AdminTopbar title="تخفیف‌ها و کوپن‌ها" />
       <div className="p-6">
+        <p className="mb-4 text-[13px] text-muted">
+          همه کدهای این بخش تحت عنوان «تخفیف برای اولین خرید» به مشتریان نمایش داده می‌شوند و فقط برای مشتریانی که
+          هنوز هیچ سفارشی ثبت نکرده‌اند قابل استفاده هستند.
+        </p>
         <div className="mb-6 rounded-2xl bg-surface p-5 shadow-sm">
           <h3 className="mb-3.5 text-[15px] font-bold">افزودن کد تخفیف جدید</h3>
           <div className="flex gap-2.5">

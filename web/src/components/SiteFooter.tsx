@@ -59,7 +59,7 @@ export function SiteFooter() {
             </li>
             <li>
               <Link href="/coupons" className="hover:text-primary">
-                کدهای تخفیف اختصاصی
+                تخفیف برای اولین خرید
               </Link>
             </li>
           </ul>

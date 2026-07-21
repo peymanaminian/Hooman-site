@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { computeDiscount, findCoupon, useAdminCouponsStore } from "@/store/adminCoupons";
+import { computeDiscount, findCoupon, hasCompletedFirstPurchase, useAdminCouponsStore } from "@/store/adminCoupons";
+import { useAdminOrdersStore } from "@/store/adminOrders";
 import { cartSubtotal, useCartHydrated, useCartStore } from "@/store/cart";
 import { useShopProductsStore } from "@/store/shopProducts";
+
+const CUSTOMER_NAME = "پیمان امینیان";
 
 export default function CartPage() {
   const lines = useCartStore((state) => state.lines);
@@ -14,18 +17,24 @@ export default function CartPage() {
   const setCoupon = useCartStore((state) => state.setCoupon);
   const products = useShopProductsStore((state) => state.items);
   const coupons = useAdminCouponsStore((state) => state.items);
+  const orders = useAdminOrdersStore((state) => state.orders);
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState<string | null>(null);
   const hydrated = useCartHydrated();
 
   if (!hydrated) return null;
 
+  const isFirstPurchase = !hasCompletedFirstPurchase(orders, CUSTOMER_NAME);
   const subtotal = cartSubtotal(lines, products);
   const appliedCoupon = couponCode ? findCoupon(coupons, couponCode) : undefined;
-  const discount = computeDiscount(appliedCoupon, subtotal);
+  const discount = computeDiscount(appliedCoupon, subtotal, isFirstPurchase);
   const total = subtotal - discount;
 
   function handleApplyCoupon() {
+    if (!isFirstPurchase) {
+      setCouponError("این کد فقط برای اولین خرید شما قابل استفاده است و شما پیش‌تر خرید ثبت کرده‌اید.");
+      return;
+    }
     const coupon = findCoupon(coupons, couponInput);
     if (!coupon) {
       setCouponError("کد تخفیف نامعتبر است.");
@@ -144,6 +153,13 @@ export default function CartPage() {
             </div>
           ) : (
             <div className="my-3.5">
+              {isFirstPurchase ? (
+                <p className="mb-1.5 text-[12px] text-muted">این کد ویژه اولین خرید شماست.</p>
+              ) : (
+                <p className="mb-1.5 text-[12px] text-muted">
+                  کدهای تخفیف اولین خرید فقط برای مشتریانی که هنوز سفارشی ثبت نکرده‌اند قابل استفاده است.
+                </p>
+              )}
               <div className="flex gap-2">
                 <input
                   value={couponInput}
@@ -153,11 +169,13 @@ export default function CartPage() {
                   }}
                   type="text"
                   placeholder="کد تخفیف را وارد کنید"
-                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2"
+                  disabled={!isFirstPurchase}
+                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2 disabled:opacity-50"
                 />
                 <button
                   onClick={handleApplyCoupon}
-                  className="rounded-lg border border-primary px-4 text-primary"
+                  disabled={!isFirstPurchase}
+                  className="rounded-lg border border-primary px-4 text-primary disabled:opacity-50"
                 >
                   اعمال
                 </button>
