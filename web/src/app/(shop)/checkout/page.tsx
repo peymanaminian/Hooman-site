@@ -1,17 +1,80 @@
 "use client";
 
+import Link from "next/link";
+import { useState } from "react";
+import { computeDiscount, findCoupon, useAdminCouponsStore } from "@/store/adminCoupons";
+import { useAdminOrdersStore } from "@/store/adminOrders";
 import { cartSubtotal, useCartHydrated, useCartStore } from "@/store/cart";
 import { useShopProductsStore } from "@/store/shopProducts";
+
+const CUSTOMER_NAME = "پیمان امینیان";
 
 const STEPS = ["سبد خرید", "آدرس و ارسال", "پرداخت", "ثبت سفارش"];
 
 export default function CheckoutPage() {
   const lines = useCartStore((state) => state.lines);
+  const couponCode = useCartStore((state) => state.couponCode);
+  const clearCart = useCartStore((state) => state.clear);
   const products = useShopProductsStore((state) => state.items);
+  const updateProduct = useShopProductsStore((state) => state.updateProduct);
+  const coupons = useAdminCouponsStore((state) => state.items);
+  const incrementCouponUsage = useAdminCouponsStore((state) => state.incrementUsage);
+  const addOrder = useAdminOrdersStore((state) => state.addOrder);
   const hydrated = useCartHydrated();
 
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
+
   const subtotal = hydrated ? cartSubtotal(lines, products) : 0;
-  const earnedPoints = Math.round(subtotal / 100000);
+  const appliedCoupon = couponCode ? findCoupon(coupons, couponCode) : undefined;
+  const discount = computeDiscount(appliedCoupon, subtotal);
+  const total = subtotal - discount;
+  const earnedPoints = Math.floor(total / 100000);
+
+  function handlePlaceOrder() {
+    if (lines.length === 0) return;
+    const order = addOrder({ customer: CUSTOMER_NAME, amount: total });
+    if (appliedCoupon) incrementCouponUsage(appliedCoupon.code);
+    for (const line of lines) {
+      const product = products.find((item) => item.slug === line.productSlug);
+      if (product) updateProduct(product.slug, { stock: Math.max(0, product.stock - line.quantity) });
+    }
+    clearCart();
+    setPlacedOrderId(order.id);
+  }
+
+  if (placedOrderId) {
+    return (
+      <div className="mx-auto max-w-md py-20 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success/10 text-3xl text-success">
+          ✓
+        </div>
+        <h1 className="mb-2 text-xl font-bold">سفارش شما با موفقیت ثبت شد</h1>
+        <p className="mb-1 text-sm text-muted">
+          شماره سفارش: <strong className="text-foreground">{placedOrderId}</strong>
+        </p>
+        <p className="mb-6 text-sm text-muted">می‌توانید وضعیت سفارش را از صفحه پیگیری سفارش دنبال کنید.</p>
+        <div className="flex justify-center gap-3">
+          <Link href="/order-tracking" className="rounded-full border border-primary px-5 py-2.5 font-bold text-primary">
+            پیگیری سفارش
+          </Link>
+          <Link href="/" className="rounded-full bg-primary px-5 py-2.5 font-bold text-white">
+            بازگشت به فروشگاه
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (hydrated && lines.length === 0) {
+    return (
+      <div className="py-16 text-center">
+        <p className="mb-4 text-muted">سبد خرید شما خالی است.</p>
+        <Link href="/" className="rounded-full bg-primary px-6 py-2.5 font-bold text-white">
+          مشاهده محصولات
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-[1000px]">
@@ -40,7 +103,7 @@ export default function CheckoutPage() {
                 <div>
                   <strong>خانه</strong> — تهران، خیابان ولیعصر، کوچه بهار، پلاک ۱۲
                 </div>
-                <div className="mt-1 text-xs text-muted">گیرنده: پیمان امینیان | ۰۹۱۲۱۲۳۴۵۶۷</div>
+                <div className="mt-1 text-xs text-muted">گیرنده: {CUSTOMER_NAME} | ۰۹۱۲۱۲۳۴۵۶۷</div>
               </div>
             </label>
             <label className="mb-2.5 flex gap-2.5 rounded-[10px] border border-border p-3.5 text-sm">
@@ -87,6 +150,12 @@ export default function CheckoutPage() {
             <span>جمع کالاها</span>
             <span>{subtotal.toLocaleString("fa-IR")} تومان</span>
           </div>
+          {appliedCoupon && (
+            <div className="mb-2.5 flex justify-between text-[13.5px] text-primary">
+              <span>تخفیف ({appliedCoupon.code})</span>
+              <span>−{discount.toLocaleString("fa-IR")} تومان</span>
+            </div>
+          )}
           <div className="mb-2.5 flex justify-between text-[13.5px] text-muted">
             <span>هزینه ارسال</span>
             <span>رایگان</span>
@@ -97,9 +166,12 @@ export default function CheckoutPage() {
           </div>
           <div className="flex justify-between border-t border-border pt-3 text-base font-extrabold">
             <span>مبلغ نهایی</span>
-            <span>{subtotal.toLocaleString("fa-IR")} تومان</span>
+            <span>{total.toLocaleString("fa-IR")} تومان</span>
           </div>
-          <button className="mt-3.5 w-full rounded-[10px] bg-primary py-3.5 font-bold text-white">
+          <button
+            onClick={handlePlaceOrder}
+            className="mt-3.5 w-full rounded-[10px] bg-primary py-3.5 font-bold text-white"
+          >
             پرداخت و ثبت نهایی سفارش
           </button>
           <div className="mt-4 text-xs text-muted">اتصال امن SSL و رمزنگاری اطلاعات پرداخت</div>

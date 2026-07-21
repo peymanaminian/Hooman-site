@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { computeDiscount, findCoupon, useAdminCouponsStore } from "@/store/adminCoupons";
 import { cartSubtotal, useCartHydrated, useCartStore } from "@/store/cart";
 import { useShopProductsStore } from "@/store/shopProducts";
 
@@ -9,14 +10,35 @@ export default function CartPage() {
   const lines = useCartStore((state) => state.lines);
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+  const couponCode = useCartStore((state) => state.couponCode);
+  const setCoupon = useCartStore((state) => state.setCoupon);
   const products = useShopProductsStore((state) => state.items);
-  const [couponCode, setCouponCode] = useState("");
+  const coupons = useAdminCouponsStore((state) => state.items);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponError, setCouponError] = useState<string | null>(null);
   const hydrated = useCartHydrated();
 
   if (!hydrated) return null;
 
   const subtotal = cartSubtotal(lines, products);
-  const total = subtotal;
+  const appliedCoupon = couponCode ? findCoupon(coupons, couponCode) : undefined;
+  const discount = computeDiscount(appliedCoupon, subtotal);
+  const total = subtotal - discount;
+
+  function handleApplyCoupon() {
+    const coupon = findCoupon(coupons, couponInput);
+    if (!coupon) {
+      setCouponError("کد تخفیف نامعتبر است.");
+      return;
+    }
+    if (subtotal < coupon.minOrderTotal) {
+      setCouponError(`حداقل مبلغ سفارش برای این کد ${coupon.minOrderTotal.toLocaleString("fa-IR")} تومان است.`);
+      return;
+    }
+    setCoupon(coupon.code);
+    setCouponError(null);
+    setCouponInput("");
+  }
 
   if (lines.length === 0) {
     return (
@@ -94,21 +116,55 @@ export default function CartPage() {
             <span>جمع کالاها</span>
             <span>{subtotal.toLocaleString("fa-IR")} تومان</span>
           </div>
+          {appliedCoupon && (
+            <div className="mb-2.5 flex justify-between text-[13.5px] text-primary">
+              <span>تخفیف ({appliedCoupon.code})</span>
+              <span>−{discount.toLocaleString("fa-IR")} تومان</span>
+            </div>
+          )}
           <div className="mb-2.5 flex justify-between text-[13.5px] text-muted">
             <span>هزینه ارسال</span>
             <span>رایگان</span>
           </div>
 
-          <div className="my-3.5 flex gap-2">
-            <input
-              value={couponCode}
-              onChange={(event) => setCouponCode(event.target.value)}
-              type="text"
-              placeholder="کد تخفیف را وارد کنید"
-              className="flex-1 rounded-lg border border-border bg-background px-3 py-2"
-            />
-            <button className="rounded-lg border border-primary px-4 text-primary">اعمال</button>
-          </div>
+          {appliedCoupon ? (
+            <div className="my-3.5 flex items-center justify-between rounded-lg border border-primary bg-primary/5 px-3 py-2 text-[13px]">
+              <span>
+                کد <strong>{appliedCoupon.code}</strong> اعمال شد
+              </span>
+              <button
+                onClick={() => {
+                  setCoupon(null);
+                  setCouponError(null);
+                }}
+                className="text-primary underline"
+              >
+                حذف
+              </button>
+            </div>
+          ) : (
+            <div className="my-3.5">
+              <div className="flex gap-2">
+                <input
+                  value={couponInput}
+                  onChange={(event) => {
+                    setCouponInput(event.target.value);
+                    setCouponError(null);
+                  }}
+                  type="text"
+                  placeholder="کد تخفیف را وارد کنید"
+                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2"
+                />
+                <button
+                  onClick={handleApplyCoupon}
+                  className="rounded-lg border border-primary px-4 text-primary"
+                >
+                  اعمال
+                </button>
+              </div>
+              {couponError && <p className="mt-1.5 text-[12px] text-red-600">{couponError}</p>}
+            </div>
+          )}
 
           <div className="flex justify-between border-t border-border pt-3 text-base font-extrabold">
             <span>مبلغ قابل پرداخت</span>

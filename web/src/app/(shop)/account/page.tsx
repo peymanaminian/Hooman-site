@@ -1,18 +1,38 @@
+"use client";
+
 import Link from "next/link";
+import { loyaltyTiers, orderStatusLabels, orderStatusStyles } from "@/lib/admin-data";
+import { useAdminOrdersStore } from "@/store/adminOrders";
+import { useHydrated } from "@/store/useHydrated";
 
-const recentOrders = [
-  { id: "#10231", date: "۱۴۰۵/۰۴/۲۸", amount: "۶,۲۷۰,۰۰۰ تومان", status: "در حال پردازش", tone: "processing" },
-  { id: "#10198", date: "۱۴۰۵/۰۴/۱۵", amount: "۱,۲۵۰,۰۰۰ تومان", status: "تحویل شده", tone: "delivered" },
-  { id: "#10142", date: "۱۴۰۵/۰۳/۲۲", amount: "۸۹۰,۰۰۰ تومان", status: "لغو شده", tone: "cancelled" },
-] as const;
+const CUSTOMER_NAME = "پیمان امینیان";
 
-const statusStyles: Record<(typeof recentOrders)[number]["tone"], string> = {
-  processing: "bg-amber-100 text-amber-800",
-  delivered: "bg-green-100 text-success",
-  cancelled: "bg-red-100 text-red-700",
+const tierBadgeColors: Record<string, string> = {
+  برنزی: "bg-bronze",
+  "نقره‌ای": "bg-silver",
+  طلایی: "bg-gold",
+  الماسی: "bg-diamond",
 };
 
 export default function AccountPage() {
+  const orders = useAdminOrdersStore((state) => state.orders);
+  const hydrated = useHydrated(useAdminOrdersStore.persist);
+
+  if (!hydrated) return null;
+
+  const successfulOrders = orders.filter((order) => order.status !== "cancelled");
+  const totalPoints = successfulOrders.reduce((sum, order) => sum + Math.floor(order.amount / 100000), 0);
+  const totalSpent = successfulOrders.reduce((sum, order) => sum + order.amount, 0);
+
+  let currentTier: (typeof loyaltyTiers)[number] = loyaltyTiers[0];
+  for (const tier of loyaltyTiers) {
+    if (totalPoints >= tier.minPoints) currentTier = tier;
+  }
+  const nextTier = loyaltyTiers.find((tier) => tier.minPoints > currentTier.minPoints);
+  const progressPercent = nextTier
+    ? Math.min(100, Math.round((totalPoints / nextTier.minPoints) * 100))
+    : 100;
+
   return (
     <>
       <div className="my-4 flex gap-1.5 text-xs text-muted">
@@ -28,10 +48,12 @@ export default function AccountPage() {
             <div className="mx-auto mb-3 flex h-[74px] w-[74px] items-center justify-center rounded-full bg-background text-lg font-bold text-primary">
               پ.ا
             </div>
-            <div className="font-bold">پیمان امینیان</div>
+            <div className="font-bold">{CUSTOMER_NAME}</div>
             <div className="text-xs text-muted">عضو از دی ۱۴۰۳</div>
-            <span className="mt-2 inline-block rounded-full bg-gold px-3.5 py-1 text-xs font-bold text-white">
-              سطح طلایی
+            <span
+              className={`mt-2 inline-block rounded-full px-3.5 py-1 text-xs font-bold text-white ${tierBadgeColors[currentTier.name]}`}
+            >
+              سطح {currentTier.name}
             </span>
           </div>
           <ul className="mt-5 space-y-1 text-[13.5px]">
@@ -47,65 +69,77 @@ export default function AccountPage() {
         <div>
           <div className="mb-5 flex gap-4">
             <div className="flex-1 rounded-2xl bg-surface p-4 text-center shadow-sm">
-              <div className="text-2xl font-extrabold text-primary">۲,۴۸۰</div>
+              <div className="text-2xl font-extrabold text-primary">{totalPoints.toLocaleString("fa-IR")}</div>
               <div className="mt-1 text-xs text-muted">امتیاز فعلی</div>
             </div>
             <div className="flex-1 rounded-2xl bg-surface p-4 text-center shadow-sm">
-              <div className="text-2xl font-extrabold text-primary">۱۸</div>
+              <div className="text-2xl font-extrabold text-primary">{successfulOrders.length.toLocaleString("fa-IR")}</div>
               <div className="mt-1 text-xs text-muted">تعداد سفارش موفق</div>
             </div>
             <div className="flex-1 rounded-2xl bg-surface p-4 text-center shadow-sm">
-              <div className="text-2xl font-extrabold text-primary">۳۲۰,۰۰۰</div>
-              <div className="mt-1 text-xs text-muted">موجودی کیف پول (تومان)</div>
+              <div className="text-2xl font-extrabold text-primary">{totalSpent.toLocaleString("fa-IR")}</div>
+              <div className="mt-1 text-xs text-muted">مجموع خرید (تومان)</div>
             </div>
           </div>
 
           <div className="mb-4 rounded-2xl bg-surface p-5 shadow-sm">
             <h3 className="mb-3.5 text-[15px] font-bold">پیشرفت تا سطح بعدی</h3>
             <div className="flex justify-between text-[12.5px]">
-              <span>سطح طلایی (فعلی)</span>
-              <span className="text-muted">۲,۴۸۰ / ۳,۰۰۰ امتیاز</span>
+              <span>سطح {currentTier.name} (فعلی)</span>
+              {nextTier && (
+                <span className="text-muted">
+                  {totalPoints.toLocaleString("fa-IR")} / {nextTier.minPoints.toLocaleString("fa-IR")} امتیاز
+                </span>
+              )}
             </div>
             <div className="mt-2.5 h-2 overflow-hidden rounded-full bg-border">
-              <div className="h-full w-[82%] bg-primary" />
+              <div className="h-full bg-primary" style={{ width: `${progressPercent}%` }} />
             </div>
             <p className="mt-2.5 text-[12.5px] text-muted">
-              با ۵۲۰ امتیاز دیگر به سطح الماسی می‌رسید و از ۱۵٪ تخفیف دائم برخوردار می‌شوید.
+              {nextTier
+                ? `با ${(nextTier.minPoints - totalPoints).toLocaleString("fa-IR")} امتیاز دیگر به سطح ${nextTier.name} می‌رسید و از «${nextTier.perk}» برخوردار می‌شوید.`
+                : "شما به بالاترین سطح باشگاه مشتریان رسیده‌اید."}
             </p>
           </div>
 
           <div className="mb-4 rounded-2xl bg-surface p-5 shadow-sm">
             <h3 className="mb-3.5 text-[15px] font-bold">سفارش‌های اخیر</h3>
-            <table className="w-full border-collapse text-[13px]">
-              <thead>
-                <tr className="text-right">
-                  <th className="border-b border-border p-2.5">شماره سفارش</th>
-                  <th className="border-b border-border p-2.5">تاریخ</th>
-                  <th className="border-b border-border p-2.5">مبلغ</th>
-                  <th className="border-b border-border p-2.5">وضعیت</th>
-                  <th className="border-b border-border p-2.5" />
-                </tr>
-              </thead>
-              <tbody>
-                {recentOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td className="border-b border-border p-2.5">{order.id}</td>
-                    <td className="border-b border-border p-2.5">{order.date}</td>
-                    <td className="border-b border-border p-2.5">{order.amount}</td>
-                    <td className="border-b border-border p-2.5">
-                      <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${statusStyles[order.tone]}`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="border-b border-border p-2.5">
-                      <Link href="#" className="text-primary">
-                        جزئیات
-                      </Link>
-                    </td>
+            {orders.length === 0 ? (
+              <p className="text-sm text-muted">هنوز سفارشی ثبت نکرده‌اید.</p>
+            ) : (
+              <table className="w-full border-collapse text-[13px]">
+                <thead>
+                  <tr className="text-right">
+                    <th className="border-b border-border p-2.5">شماره سفارش</th>
+                    <th className="border-b border-border p-2.5">تاریخ</th>
+                    <th className="border-b border-border p-2.5">مبلغ</th>
+                    <th className="border-b border-border p-2.5">وضعیت</th>
+                    <th className="border-b border-border p-2.5" />
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {orders.map((order) => (
+                    <tr key={order.id}>
+                      <td className="border-b border-border p-2.5">{order.id}</td>
+                      <td className="border-b border-border p-2.5">{order.date}</td>
+                      <td className="border-b border-border p-2.5">{order.amount.toLocaleString("fa-IR")} تومان</td>
+                      <td className="border-b border-border p-2.5">
+                        <span
+                          className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${orderStatusStyles[order.status]}`}
+                        >
+                          {orderStatusLabels[order.status]}
+                        </span>
+                      </td>
+                      <td className="border-b border-border p-2.5">
+                        <Link href="/order-tracking" className="text-primary">
+                          جزئیات
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
 
           <div className="rounded-2xl bg-surface p-5 shadow-sm">

@@ -13,6 +13,7 @@
   --gold: #b8860b;
   --silver: #9ca3af;
   --bronze: #b06a3d;
+  --diamond: #0891b2;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -38,6 +39,7 @@
   --color-gold: var(--gold);
   --color-silver: var(--silver);
   --color-bronze: var(--bronze);
+  --color-diamond: var(--diamond);
   --font-sans: var(--font-vazirmatn);
 }
 

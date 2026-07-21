@@ -11,9 +11,11 @@ export type CartLine = {
 
 type CartState = {
   lines: CartLine[];
+  couponCode: string | null;
   addItem: (productSlug: string, variantId: string, quantity?: number) => void;
   removeItem: (productSlug: string, variantId: string) => void;
   setQuantity: (productSlug: string, variantId: string, quantity: number) => void;
+  setCoupon: (code: string | null) => void;
   clear: () => void;
 };
 
@@ -21,6 +23,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       lines: [],
+      couponCode: null,
       addItem: (productSlug, variantId, quantity = 1) =>
         set((state) => {
           const existing = state.lines.find(
@@ -51,7 +54,8 @@ export const useCartStore = create<CartState>()(
             )
             .filter((line) => line.quantity > 0),
         })),
-      clear: () => set({ lines: [] }),
+      setCoupon: (code) => set({ couponCode: code }),
+      clear: () => set({ lines: [], couponCode: null }),
     }),
     { name: "hooman-shop-cart" }
   )
