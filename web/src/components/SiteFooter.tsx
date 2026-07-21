@@ -12,37 +12,75 @@ export function SiteFooter() {
         <div>
           <h4 className="mb-3 text-sm font-bold">درباره {storeName}</h4>
           <ul className="space-y-2 text-xs text-muted">
-            <li>درباره ما</li>
-            <li>فرصت‌های شغلی</li>
-            <li>وبلاگ</li>
+            <li>
+              <Link href="/about" className="hover:text-primary">
+                درباره ما
+              </Link>
+            </li>
+            <li>
+              <Link href="/careers" className="hover:text-primary">
+                فرصت‌های شغلی
+              </Link>
+            </li>
+            <li>
+              <Link href="/blog" className="hover:text-primary">
+                وبلاگ
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <h4 className="mb-3 text-sm font-bold">خدمات مشتریان</h4>
           <ul className="space-y-2 text-xs text-muted">
-            <li>پیگیری سفارش</li>
-            <li>راهنمای خرید</li>
-            <li>شرایط بازگشت کالا</li>
+            <li>
+              <Link href="/order-tracking" className="hover:text-primary">
+                پیگیری سفارش
+              </Link>
+            </li>
+            <li>
+              <Link href="/shopping-guide" className="hover:text-primary">
+                راهنمای خرید
+              </Link>
+            </li>
+            <li>
+              <Link href="/return-policy" className="hover:text-primary">
+                شرایط بازگشت کالا
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <h4 className="mb-3 text-sm font-bold">باشگاه مشتریان</h4>
           <ul className="space-y-2 text-xs text-muted">
-            <li>سطح‌بندی و امتیازات</li>
-            <li>کدهای تخفیف اختصاصی</li>
+            <li>
+              <Link href="/loyalty-tiers" className="hover:text-primary">
+                سطح‌بندی و امتیازات
+              </Link>
+            </li>
+            <li>
+              <Link href="/coupons" className="hover:text-primary">
+                کدهای تخفیف اختصاصی
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <h4 className="mb-3 text-sm font-bold">ما را دنبال کنید</h4>
           <div className="mt-2 flex gap-2">
-            {["IG", "TG", "G"].map((label) => (
-              <span
-                key={label}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-xs"
-              >
-                {label}
-              </span>
-            ))}
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-xs">
+              IG
+            </span>
+            <a
+              href="https://t.me/Hooman120_bot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-xs hover:border-primary hover:text-primary"
+            >
+              TG
+            </a>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-xs">
+              G
+            </span>
           </div>
         </div>
       </div>

@@ -21,7 +21,9 @@ export function SiteHeader() {
           <span>ارسال رایگان برای خریدهای بالای ۵۰۰ هزار تومان</span>
           <div className="flex gap-3">
             <span>اینستاگرام</span>
-            <span>تلگرام</span>
+            <a href="https://t.me/Hooman120_bot" target="_blank" rel="noopener noreferrer" className="hover:underline">
+              تلگرام
+            </a>
           </div>
         </div>
       </div>

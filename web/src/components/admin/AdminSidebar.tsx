@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAdminAuthStore } from "@/store/adminAuth";
 import { useSiteContentStore } from "@/store/siteContent";
 
 const NAV_ITEMS = [
@@ -21,11 +22,12 @@ const NAV_ITEMS = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const storeName = useSiteContentStore((state) => state.storeName);
+  const logout = useAdminAuthStore((state) => state.logout);
 
   return (
-    <aside className="w-[230px] shrink-0 bg-[#1b1d27] p-5 text-[#e5e7eb]">
+    <aside className="flex w-[230px] shrink-0 flex-col bg-[#1b1d27] p-5 text-[#e5e7eb]">
       <div className="mb-6 px-2 text-lg font-extrabold text-white">{storeName} — مدیریت</div>
-      <ul className="space-y-1">
+      <ul className="flex-1 space-y-1">
         {NAV_ITEMS.map((item) => {
           const active = item.href === "/admin" ? pathname === "/admin" : pathname?.startsWith(item.href);
           return (
@@ -42,6 +44,12 @@ export function AdminSidebar() {
           );
         })}
       </ul>
+      <button
+        onClick={logout}
+        className="mt-4 rounded-lg px-3 py-2.5 text-right text-[13.5px] text-[#b7bccb] hover:bg-primary hover:text-white"
+      >
+        خروج از پنل مدیریت
+      </button>
     </aside>
   );
 }
