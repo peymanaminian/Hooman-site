@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { DiamondIcon } from "@/components/DiamondIcon";
+import { logoutAction } from "@/lib/auth-actions";
+import type { CurrentUser } from "@/lib/auth";
 import { cartLineCount, useCartHydrated, useCartStore } from "@/store/cart";
 import { sortedCategories, useShopCategoriesStore } from "@/store/shopCategories";
 import { useSiteContentStore } from "@/store/siteContent";
 
-export function SiteHeader() {
+export function SiteHeader({ currentUser }: { currentUser: CurrentUser | null }) {
   const lines = useCartStore((state) => state.lines);
   const hydrated = useCartHydrated();
   const categories = useShopCategoriesStore((state) => state.items);
@@ -43,12 +45,22 @@ export function SiteHeader() {
           <button className="bg-primary px-5 font-bold text-white">جستجو</button>
         </div>
         <div className="flex shrink-0 items-center gap-4 whitespace-nowrap text-xs text-muted">
-          <Link href="/account" className="flex flex-col items-center gap-1">
-            <span>حساب من</span>
-          </Link>
-          <Link href="/account" className="flex flex-col items-center gap-1">
-            <span>باشگاه مشتریان</span>
-          </Link>
+          {currentUser ? (
+            <>
+              <Link href="/account" className="flex flex-col items-center gap-1">
+                <span>{currentUser.fullName}</span>
+              </Link>
+              <form action={logoutAction}>
+                <button type="submit" className="flex flex-col items-center gap-1">
+                  <span>خروج</span>
+                </button>
+              </form>
+            </>
+          ) : (
+            <Link href="/login" className="flex flex-col items-center gap-1">
+              <span>ورود / ثبت‌نام</span>
+            </Link>
+          )}
           <Link href="/cart" className="relative flex flex-col items-center gap-1">
             <span>سبد خرید</span>
             {itemCount > 0 && (
