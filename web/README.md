@@ -19,29 +19,34 @@ npm run dev
 
 ## استقرار (Deploy)
 
-### GitHub Pages
+این اپلیکیشن یک سرور واقعی Next.js لازم دارد (نه static export) چون ثبت‌نام/ورود از Server Actions و کوکی استفاده می‌کنند. میزبان فعلی **ParsPack PaaS** است.
 
-این پروژه با ورک‌فلو `.github/workflows/deploy-pages.yml` به‌صورت خودکار در هر push به شاخه `main` روی GitHub Pages منتشر می‌شود (به آدرس `https://<username>.github.io/Hooman-site/`). این ورک‌فلو یک static export می‌سازد (`next build` با `DEPLOY_TARGET=github-pages` که `basePath`/`assetPrefix` را روی `/Hooman-site` تنظیم می‌کند، چون GitHub Pages این مخزن را از یک زیرمسیر سرو می‌کند نه ریشه دامنه).
+متغیرهای محیطی لازم روی هاست:
 
-**یک‌بار قبل از اولین اجرا** باید در تنظیمات مخزن، Pages را فعال کنید:
-Settings → Pages → Build and deployment → Source: **GitHub Actions**
-
-برای تست local همین حالت:
-
-```bash
-DEPLOY_TARGET=github-pages npm run build
-npx serve out
+```
+DATABASE_URL=postgresql://user:password@host:5432/database?schema=public
+SESSION_SECRET=<با openssl rand -hex 32 بسازید>
+# NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=<اختیاری، برای چند نمونه/ری‌استارت مکرر>
 ```
 
-### Vercel / Netlify
+فایل نمونه: `.env.example`.
 
-اگر بعداً به Vercel یا Netlify برگردید، نیازی به `DEPLOY_TARGET` نیست — چون این متغیر تنظیم نمی‌شود، برنامه به‌صورت کامل با سرور Next.js (نه static export) اجرا می‌شود؛ پیکربندی Netlify از پیش در `../netlify.toml` آماده است.
+قبل از اولین اجرا روی هاست، مایگریشن‌های Prisma را روی دیتابیس واقعی اعمال کنید:
 
-فعلاً داده‌های محصولات/دسته‌بندی‌ها به‌صورت mock در `src/lib/data.ts` تعریف شده‌اند تا رابط کاربری بدون نیاز به دیتابیس واقعی قابل اجرا باشد. برای اتصال به دیتابیس واقعی:
+```bash
+npx prisma migrate deploy
+```
 
-1. یک دیتابیس PostgreSQL راه‌اندازی کنید و `DATABASE_URL` را در `.env` تنظیم کنید.
-2. `npx prisma migrate dev` را اجرا کنید تا جداول بر اساس `prisma/schema.prisma` ساخته شوند.
-3. توابع `src/lib/data.ts` را با کوئری‌های Prisma (`src/lib/prisma.ts`) جایگزین کنید.
+برای توسعه local:
+
+```bash
+npm install
+npm run dev
+```
+
+سپس http://localhost:3000 را باز کنید.
+
+فعلاً داده‌های محصولات/دسته‌بندی‌ها و سبد خرید به‌صورت mock در `src/lib/data.ts` و Zustand (`localStorage`) هستند؛ فقط احراز هویت (ثبت‌نام/ورود/خروج) به دیتابیس واقعی وصل است (`src/lib/auth.ts`, `src/lib/auth-actions.ts`). برای وصل کردن باقی داده‌ها به Prisma، توابع `src/lib/data.ts` و استورهای `src/store/*` را با کوئری‌های Prisma (`src/lib/prisma.ts`) جایگزین کنید.
 
 ## ساختار صفحات
 
